@@ -18,3 +18,10 @@ Usage: EAQUAL [-options] -fref reference_file_path -ftest test_file_path
 ODG Objective Difference Grade, a measure of quality comparable to the Subjective Difference Grade (SDG), which is calculated as the difference between the quality rating of the reference and the test signal. The quality ratings are measured with the five point scale defined in ITU-R BS.1116 and thus the SDG and ODG have a range of [-4;0] where –4 stands for very annoying difference and 0 stands for imperceptible difference between reference and test signal.
 	
 
+##ITU Standard
+Peak Technology is recommended by ITU-R Rec. Bs. 1387: 
+https://drive.google.com/file/d/0B3uG8y1SBWuQbWJhZXMycm9Dd0U/view?usp=sharing
+
+##Peakb
+Peakb is a c-implementation of PEAQ for educational use - it "accomplishes the same functions in a limited manner, and has not been validated with ITU data."
+http://sourceforge.net/projects/peaqb/?source=typ_redirect
