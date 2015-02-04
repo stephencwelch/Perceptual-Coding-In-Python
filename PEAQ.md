@@ -106,7 +106,7 @@ The TotalNMRB is not quite invariant over changing time duration, but it appears
 |  **Piezo** | 88.919  | 73.222  | 83.088  | 0  |
 
 
-#####Avg Mod Diff2B(10 seconds)
+#####Avg Mod Diff2B (10 seconds)
 |   | **Mic 1**  |  **Mic 2** | **Mic 3**  | **Piezo**  |
 |:---:|:---:|:---:|:---:|:---:|
 |  **Mic 1** | 0  | 59.727  | 26.161  | 54.943  |
@@ -115,7 +115,7 @@ The TotalNMRB is not quite invariant over changing time duration, but it appears
 |  **Piezo** | 134.88  | 106.39  | 130.05  | 0  |
 
 
-#####Avg Mod Diff2B(25 seconds)
+#####Avg Mod Diff2B (25 seconds)
 |   | **Mic 1**  |  **Mic 2** | **Mic 3**  | **Piezo**  |
 |:---:|:---:|:---:|:---:|:---:|
 |  **Mic 1** | 0  | 62.312  | 27.392  | 56.145  |
@@ -134,7 +134,7 @@ There does appear to be a clear distinction between values for case of Piezo-Mic
 |  **Piezo** | 543.49  | 615.84  | 499.08  | 697.41  |
 
 
-#####Bandwidth RefB (10 seconds))
+#####Bandwidth RefB (10 seconds)
 |   | **Mic 1**  |  **Mic 2** | **Mic 3**  | **Piezo**  |
 |:---:|:---:|:---:|:---:|:---:|
 |  **Mic 1** | 637.06  | 792.03  | 595.65  | 873.64  |
@@ -143,7 +143,7 @@ There does appear to be a clear distinction between values for case of Piezo-Mic
 |  **Piezo** | 551.62  | 600.03  | 505.31  | 631.73  |
 
 
-#####Bandwidth RefB (25 seconds))
+#####Bandwidth RefB (25 seconds)
 |   | **Mic 1**  |  **Mic 2** | **Mic 3**  | **Piezo**  |
 |:---:|:---:|:---:|:---:|:---:|
 |  **Mic 1** | 657.77  | 787.18  | 601.17  | 866.59  |
@@ -166,7 +166,8 @@ Certain other parameters could potentially be decent metrics but would need to b
 * AvgModDiff1B / WinModDiff1B - these two parameters produce nearly identical values with each time duration; invariant over time but do not show the most clear distinction
 
 ######***References***
-[1] T. Thiede, et. al., "PEAQ - The ITU Standard for Objective Measurement of Perceived Audio Quality", J. Audio Eng. Soc., Vol. 48, No. 1/2, January/February 2000.
+[1] T. Thiede, et. al., "PEAQ - The ITU Standard for Objective Measurement of Perceived Audio Quality", J. Audio Eng. Soc., Vol. 48, No 1/2, January/February 2000.
+
 [2] P. Kabal, "An Examination and Interpretation of ITU-R BS.1387:
  Perceptual Evaluation of Audio Quality", TSP Lab Technical Report,
  Dept. Electrical & Computer Engineering, McGill University, May 2002. 
