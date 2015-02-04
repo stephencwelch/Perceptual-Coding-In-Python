@@ -14,6 +14,8 @@ The motivation behind investing more time into PEAQ is as follows: other measure
 
 Since PEAQ is a standard, the algorithm is licensed and targeted more at telecommunication companies. However, various implementation attempts are floating around the Internet. One commonly mentioned one is by Peter Kabal of the Multimedia Signal Processing lab at McGill University. Kabal did an extensive examination and interpretation of PEAQ, which resulted in a report titled "An Examination and Interpretation of ITU-R BS.1387: Perceptual Evaluation of Audio Quality" and a MATLAB implementation library called PQevalAudio. This code can be found floating around on the Internet (we acquired it through a GitHub account for a CCRMA student). Our analyses and results below made use of this code.
 
+###Model Output Variable (MOV) Overview
+
 ###How to Use the PEAQ Code
 
 The PEAQ code is contained in a directory called PQevalAudio, with the following structure:
@@ -41,3 +43,97 @@ where Fref and Ftest are the filenames storing the reference and test signals, r
 
 ###Test/Data Collecting Scripts
 
+###Results and Analysis
+
+Testing was done using four acoustic guitar signal files, with the files corresponding the the same recording done with four different sources: three microphones and a piezo pickup. The naming convention is as follows: mic1, mic2, mic3, and piezo. Three different time durations were used: 1 second, 10 seconds, and 25 seconds. For each duration set, the signals were normalized and time-aligned. The final file format used is as follows: "timeAligned_<source>_Xsec.wav" (for example, "timeAligned_mic1_10sec.wav"). The files are stored in the exports folder.
+
+For each duration, PEAQ was applied to all permutations of signal orderings (for reference and test signals), resulting in 16 tests for each time duration. The resulting values for all 12 parameters (11 MOV parameters and the ODG value) were put into parameter-specific tables to aid in the analysis process.
+
+The idea was to tabulate the resulting values and see if there were any discernable differences between microphone-to-microphone and microphone-to-piezo comparisons for each parameter. We were able to identify a handful of parameters that appeared to be promising metrics, in that there was a noticeable difference in magnitude of parameter value for these different scenarios. Tables for these parameter outputs are shown below (all of the .xlsx files containing tables for each parameter are stored in the /data/PEAQ_data folder).
+
+
+#####Total NMRB (1 second)
+
+|   | **Mic 1**  |  **Mic 2** | **Mic 3**  | **Piezo**  |
+|:---:|:---:|:---:|:---:|:---:|
+|  **Mic 1** | -135.0962  | -1.7464  | -5.3445  | -0.8371  |
+|  **Mic 2** | 5.0941  | -132.6024  | 3.5502  | 0.8541  |
+|  **Mic 3** | -4.019  | -1.7633  | -135.0105  | -0.5765  |
+|  **Piezo** | 15.5656  | 9.2832  | 14.2897  | -127.1571  |
+
+
+#####Total NMRB (10 seconds)
+|   | **Mic 1**  |  **Mic 2** | **Mic 3**  | **Piezo**  |
+|:---:|:---:|:---:|:---:|:---:|
+|  **Mic 1** | -127.727  | -1.5176  | -5.1531  | -0.5891  |
+|  **Mic 2** | 3.1955  | -126.5226  | 2.5799  | 0.7464  |
+|  **Mic 3** | -4.7174  | -1.6902  | -127.554  | -0.6642  |
+|  **Piezo** | 12.106  | 6.5834  | 11.5161  | -124.0896  |
+
+
+#####Total NMRB (25 seconds)
+|   | **Mic 1**  |  **Mic 2** | **Mic 3**  | **Piezo**  |
+|:---:|:---:|:---:|:---:|:---:|
+|  **Mic 1** | -128.6971  | -1.5266  | -5.5284  | -0.6219  |
+|  **Mic 2** | 3.1294  | -127.4114  | 2.7351  | 0.6346  |
+|  **Mic 3** | -5.073  | -1.6967  | -128.5289  | -0.7086  |
+|  **Piezo** | 12.4067  | 7.1085  | 11.787  | -124.7092  |
+
+
+#####(1 second)
+|   | **Mic 1**  |  **Mic 2** | **Mic 3**  | **Piezo**  |
+|:---:|:---:|:---:|:---:|:---:|
+|  **Mic 1** | 0  | 0  | 0  | 0  |
+|  **Mic 2** | 0  | 0  | 0  | 0  |
+|  **Mic 3** | 0  | 0  | 0  | 0  |
+|  **Piezo** | 0  | 0  | 0  | 0  |
+
+
+#####(10 seconds)
+|   | **Mic 1**  |  **Mic 2** | **Mic 3**  | **Piezo**  |
+|:---:|:---:|:---:|:---:|:---:|
+|  **Mic 1** | 0  | 0  | 0  | 0  |
+|  **Mic 2** | 0  | 0  | 0  | 0  |
+|  **Mic 3** | 0  | 0  | 0  | 0  |
+|  **Piezo** | 0  | 0  | 0  | 0  |
+
+
+#####(25 seconds)
+|   | **Mic 1**  |  **Mic 2** | **Mic 3**  | **Piezo**  |
+|:---:|:---:|:---:|:---:|:---:|
+|  **Mic 1** | 0  | 0  | 0  | 0  |
+|  **Mic 2** | 0  | 0  | 0  | 0  |
+|  **Mic 3** | 0  | 0  | 0  | 0  |
+|  **Piezo** | 0  | 0  | 0  | 0  |
+
+
+#####(1 second)
+|   | **Mic 1**  |  **Mic 2** | **Mic 3**  | **Piezo**  |
+|:---:|:---:|:---:|:---:|:---:|
+|  **Mic 1** | 0  | 0  | 0  | 0  |
+|  **Mic 2** | 0  | 0  | 0  | 0  |
+|  **Mic 3** | 0  | 0  | 0  | 0  |
+|  **Piezo** | 0  | 0  | 0  | 0  |
+
+
+#####(10 seconds))
+|   | **Mic 1**  |  **Mic 2** | **Mic 3**  | **Piezo**  |
+|:---:|:---:|:---:|:---:|:---:|
+|  **Mic 1** | 0  | 0  | 0  | 0  |
+|  **Mic 2** | 0  | 0  | 0  | 0  |
+|  **Mic 3** | 0  | 0  | 0  | 0  |
+|  **Piezo** | 0  | 0  | 0  | 0  |
+
+
+#####(25 seconds))
+|   | **Mic 1**  |  **Mic 2** | **Mic 3**  | **Piezo**  |
+|:---:|:---:|:---:|:---:|:---:|
+|  **Mic 1** | 0  | 0  | 0  | 0  |
+|  **Mic 2** | 0  | 0  | 0  | 0  |
+|  **Mic 3** | 0  | 0  | 0  | 0  |
+|  **Piezo** | 0  | 0  | 0  | 0  |
+
+
+Bad parameters: MFPDB (pretty much all values are equal), ADBB (not much difference between mic-mic and mic-piezo comparisons), 
+
+Notes about parameters: EHSB (differences seem to decrease as the time duration increases - might not be a good metric)
