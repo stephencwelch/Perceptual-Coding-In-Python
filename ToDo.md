@@ -1,7 +1,5 @@
 #To Do 
 
-- Fix GitHub stuff
-- Docomunt Time-alignement code
-- Compare ODG and MOVs for time-aligned microphone and peizo signals. 
-- Try out and document various PEAQ-like resources
+- Stephen: Export some transients and sustains for Matthew to test using PEAQ on Matlab.
+- Matthew: investigate time-frequency behavior of MOVs.
 - Start looking under the hood of these algorithms, maybe do some simple implementation in python
