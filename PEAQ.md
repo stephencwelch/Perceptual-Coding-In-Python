@@ -165,6 +165,166 @@ Other parameters possess qualities that might make them bad metrics:
 Certain other parameters could potentially be decent metrics but would need to be looked at further with additional test data. These include:
 * AvgModDiff1B / WinModDiff1B - these two parameters produce nearly identical values with each time duration; invariant over time but do not show the most clear distinction
 
+###MOV Experiments
+
+Additional tests and experiments were conducted to explore and better understand the MOV parameters in different contexts, mainly for piezo vs. mic signals, as well as for for transient vs. sustain segments.
+
+Instead of simply analyzing the final output MOV values in a table form, as done above, we wanted to look at time-dependent behaviors and trends, i.e. how the MOV values change over time. One particular thing of interest to us was how these time plots of MOVs behaved in comparison to the signal spectrograms. For example, do certain parameters appear to behave in some consistent, predictable way in the event of transients (vertical striations on spectrograms) or sustain regions? Are there noticeable differences between MOV time plots for mic signals versus for piezo signals? What more can potentially be ascertained from these MOV plots? With these questions in mind, we set out to create plots and visualizations to display this information.
+
+In the end, we decided on three different ways of looking at the data: 
+
+* 1. A grid of MOV/spectrogram plots
+* 2. Stacked plots of single spectrogram and MOV curves (all MOV curves in one plot, with different colors for mic-mic and mic-piezo comparisons)
+* 3. MOV output value tables for specific input types: signals with only sustain portions, with only transient portions, and with only transient portions and silence removed.
+
+#####1. Grid Plots - MOVs and Spectrograms
+
+The layout for the grid plots is as follows, for a specfic MOV variable: spectrograms (mic1, mic2, mic3, piezo) in first row; then a 4x4 grid of MOV time-plot curves, where the (m,n) entry corresponds to reference signal mic_m and test signal mic_n (4 == piezo). For example, grid entry (2,4) is mic2 - piezo comparison, entry (3,1) is mic3 - mic1, etc.
+
+The variables displayed here are the BandwidthRef and NMR(avg) variables. These are intermediate values that eventually map to final output variables (NRM(avg) maps to TotalNMR). There are plots for both 1 second and 10 seconds of audio. 
+
+#####BandwidthRef (1 second)
+![Alt text](/data/PEAQ_data/MOV_Spectrogram_Grid_Plots/1_second/BW_Ref.jpg)
+
+#####BandwidthRef (10 seconds)
+![Alt text](/data/PEAQ_data/MOV_Spectrogram_Grid_Plots/10_seconds/BW_Ref.jpg)
+
+#####NMR(avg) (1 second)
+![Alt text](/data/PEAQ_data/MOV_Spectrogram_Grid_Plots/1_second/NMR_avg.jpg)
+
+#####NMR(avg) (10 seconds)
+![Alt text](/data/PEAQ_data/MOV_Spectrogram_Grid_Plots/10_seconds/NMR_avg.jpg)
+
+The size and complexity of these plots make it a little difficult to extract meaningful results or information from, though it does appear there may be a relationship between strong vertical striations in the spectrogram and peaks/dips in some MOV curves.
+
+#####2. Stacked Plots - MOVs and Spectrogram
+
+The layout for the stacked plots is as follows, for a specfic MOV variable: the first row is a single spectrogram (for the mic 1 signal of the specified duration); the second row has a single plot with each MOV time-plot curve for the current MOV variable, with two colors depicting the type of comparison formed (either mic-to-mic or mic-to-piezo, with no self comparisons plotted). 
+
+Like with the grid plots, the variables displayed here are the BandwidthRef and NMR(avg) variables. Again, there are plots for both 1 second and 10 seconds of audio. 
+
+#####BandwidthRef (1 second)
+![Alt text](/data/PEAQ_data/MOV_Spectrogram_Stacked_Plots/1_second_2_Transparency/BW_Ref.jpg)
+
+#####BandwidthRef (10 seconds)
+![Alt text](/data/PEAQ_data/MOV_Spectrogram_Stacked_Plots/10_seconds_2_Transparency/BW_Ref.jpg)
+
+#####NMR(avg) (1 second)
+![Alt text](/data/PEAQ_data/MOV_Spectrogram_Stacked_Plots/1_second_2_Transparency/NMR_avg.jpg)
+
+#####NMR(avg) (10 seconds)
+![Alt text](/data/PEAQ_data/MOV_Spectrogram_Stacked_Plots/10_seconds_2_Transparency/NMR_avg.jpg)
+
+Again, like with the grid plots, the complexity of these plots make it a little difficult to extract meaningful results or information from.
+
+#####3. Tables - Sustain vs. Transients
+
+Part of these experiments involved analyzing how the MOV values vary between sustain and transient portions of signal. To do this, we first had to create signals with only sustain portion and others containing only transients. The procedure and data types are explained more in 'exports/transientsAndSustains/README.md,' but the overview is that a heuristic wavelet-based technique was used to divide a signal into transient and sustain portions; then, X samples of transients were removed to produce the sustain signals (here, X values of 256, 512, 1024, and 2048 were used). The removed portions constituted the transient signals; additionally, silence portions between transients were removed to also produce transients-with-no-silence signals. For each value of X, MOV output tables were produced by comparing signals of the same type; for example, the microphone and piezo signals with only sustain portions produced one table, like are shown in the Testing section above, etc. These tables were computed for each MOV parameter.
+
+Shown below are the tables for the two parameters that we found to be most promising: BandwidthRef and TotalNMRB.
+
+#####512 Sample Transients
+
+#####TotalNMRB (Sustain only)
+|   | **Mic 1**  |  **Mic 2** | **Mic 3**  | **Piezo**  |
+|:---:|:---:|:---:|:---:|:---:|
+|  **Mic 1** | -128.55  | -1.56  | -5.53  | -0.69  |
+|  **Mic 2** | 3.26  | -127.23  | 2.69  | 0.54  |
+|  **Mic 3** | -4.89  | -1.67  | -128.33  | -0.73  |
+|  **Piezo** | 12.63  | 7.14  | 11.87 | -124.57  |
+
+#####TotalNMRB (Transients only)
+|   | **Mic 1**  |  **Mic 2** | **Mic 3**  | **Piezo**  |
+|:---:|:---:|:---:|:---:|:---:|
+|  **Mic 1** | -118.80  | -9.94 | -14.19  | -8.91  |
+|  **Mic 2** | -2.42  | -118.55  | -3.69  | -8.38  |
+|  **Mic 3** | -12.61  | -9.94  | -118.76  | -8.90  |
+|  **Piezo** | 8.18  | 1.12  | 6.76  | -118.28  |
+
+#####TotalNMRB (Transients only, no silence)
+|   | **Mic 1**  |  **Mic 2** | **Mic 3**  | **Piezo**  |
+|:---:|:---:|:---:|:---:|:---:|
+|  **Mic 1** | -147.91  | -2.74 | -7.08  | -1.51  |
+|  **Mic 2** | 4.61  | -143.10  | 3.29  | -1.14  |
+|  **Mic 3** | -5.48  | -2.79  | -147.95  | -1.51  |
+|  **Piezo** | 15.88  | 8.51  | 14.35  | -133.65  |
+
+#####Bandwidth RefB (Sustain only)
+|   | **Mic 1**  |  **Mic 2** | **Mic 3**  | **Piezo**  |
+|:---:|:---:|:---:|:---:|:---:|
+|  **Mic 1** | 649.38  | 784.08  | 601.92  | 863.01  |
+|  **Mic 2** | 631.41  | 670.73  | 589.57  | 709.14  |
+|  **Mic 3** | 710.89  | 781.73  | 640.67  | 872.03  |
+|  **Piezo** | 546.45  | 590.95  | 496.25  | 632.63  |
+
+#####Bandwidth RefB (Transients only)
+|   | **Mic 1**  |  **Mic 2** | **Mic 3**  | **Piezo**  |
+|:---:|:---:|:---:|:---:|:---:|
+|  **Mic 1** | 875.39  | 889.08  | 854.41  | 897.00 |
+|  **Mic 2** | 866.01  | 874.68  | 864.40  | 883.39  |
+|  **Mic 3** | 895.42  | 903.76  | 862.72  | 906.98  |
+|  **Piezo** | 884.84  | 872.62  | 902.65  | 872.41  |
+
+#####Bandwidth RefB (Transients only, no silence)
+|   | **Mic 1**  |  **Mic 2** | **Mic 3**  | **Piezo**  |
+|:---:|:---:|:---:|:---:|:---:|
+|  **Mic 1** | 697.76  | 782.92  | 563.86  | 840.34  |
+|  **Mic 2** | 622.53  | 696.38  | 504.47  | 751.52  |
+|  **Mic 3** | 834.94  | 881.44  | 573.60  | 889.74  |
+|  **Piezo** | 441.73  | 495.00  | 371.00  | 583.04  |
+
+#####2048 Sample Transients
+
+#####TotalNMRB (Sustain only)
+|   | **Mic 1**  |  **Mic 2** | **Mic 3**  | **Piezo**  |
+|:---:|:---:|:---:|:---:|:---:|
+|  **Mic 1** | -128.37  | -1.56  | -5.51  | -0.69  |
+|  **Mic 2** | 3.24  | -127.08  | 2.65  | 0.51  |
+|  **Mic 3** | -4.86  | -1.67  | -128.15  | -0.72  |
+|  **Piezo** | 12.57  | 7.10  | 11.80 | -124.43  |
+
+#####TotalNMRB (Transients only)
+|   | **Mic 1**  |  **Mic 2** | **Mic 3**  | **Piezo**  |
+|:---:|:---:|:---:|:---:|:---:|
+|  **Mic 1** | -119.01  | -7.72 | -12.92  | -6.87  |
+|  **Mic 2** | -5.73  | -118.92  | -6.26  | -6.41  |
+|  **Mic 3** | -12.21  | -7.84  | -118.99  | -7.06  |
+|  **Piezo** | 3.46  | 0.07  | 2.64  | -118.68  |
+
+#####TotalNMRB (Transients only, no silence)
+|   | **Mic 1**  |  **Mic 2** | **Mic 3**  | **Piezo**  |
+|:---:|:---:|:---:|:---:|:---:|
+|  **Mic 1** | -135.79  | -1.45 | -6.60  | -0.74  |
+|  **Mic 2** | 0.81  | -135.15  | 0.25  | -0.08  |
+|  **Mic 3** | -5.85  | -1.61  | -136.03  | -0.95  |
+|  **Piezo** | 10.33  | 6.72  | 9.52  | -129.76  |
+
+#####Bandwidth RefB (Sustain only)
+|   | **Mic 1**  |  **Mic 2** | **Mic 3**  | **Piezo**  |
+|:---:|:---:|:---:|:---:|:---:|
+|  **Mic 1** | 643.48  | 777.89  | 598.12  | 857.30  |
+|  **Mic 2** | 627.93  | 665.45  | 589.22  | 704.70  |
+|  **Mic 3** | 703.31  | 774.54  | 634.19  | 864.38  |
+|  **Piezo** | 540.71  | 588.30  | 497.91  | 627.79  |
+
+#####Bandwidth RefB (Transients only)
+|   | **Mic 1**  |  **Mic 2** | **Mic 3**  | **Piezo**  |
+|:---:|:---:|:---:|:---:|:---:|
+|  **Mic 1** | 851.60  | 858.99  | 822.53  | 862.72  |
+|  **Mic 2** | 851.65  | 852.48  | 829.51  | 857.67  |
+|  **Mic 3** | 884.45  | 884.30  | 838.71  | 888.77  |
+|  **Piezo** | 843.84  | 843.81  | 862.24  | 848.22  |
+
+#####Bandwidth RefB (Transients only, no silence)
+|   | **Mic 1**  |  **Mic 2** | **Mic 3**  | **Piezo**  |
+|:---:|:---:|:---:|:---:|:---:|
+|  **Mic 1** | 728.63  | 748.04  | 601.20  | 764.07  |
+|  **Mic 2** | 714.62  | 724.74  | 599.24  | 742.52  |
+|  **Mic 3** | 854.75  | 853.29  | 652.67  | 869.42  |
+|  **Piezo** | 641.29  | 642.68  | 535.11  | 665.06  |
+
+These tables do little to provide any additional information about these parameters outside of the conclusions that were already reached from above results. All of the results point towards TotalNMRB and BandwidthRefB as being potentially useful MOVs/measures for future use.
+
 ######***References***
 [1] T. Thiede, et. al., "PEAQ - The ITU Standard for Objective Measurement of Perceived Audio Quality", J. Audio Eng. Soc., Vol. 48, No 1/2, January/February 2000.
 
