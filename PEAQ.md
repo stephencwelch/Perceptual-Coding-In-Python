@@ -184,16 +184,16 @@ The layout for the grid plots is as follows, for a specfic MOV variable: spectro
 The variables displayed here are the BandwidthRef and NMR(avg) variables. These are intermediate values that eventually map to final output variables (NRM(avg) maps to TotalNMR). There are plots for both 1 second and 10 seconds of audio. 
 
 #####BandwidthRef (1 second)
-![Image](../data/PEAQ_data/MOV_Spectrogram_Grid_Plots/1_second/BW_Ref.jpg)
+![Image](https://raw.githubusercontent.com/stephencwelch/Perceptual-Coding-In-Python/master/data/PEAQ_data/MOV_Spectrogram_Grid_Plots/1_Second/BW_Ref.jpg)
 
 #####BandwidthRef (10 seconds)
 ![Image](https://raw.githubusercontent.com/stephencwelch/Perceptual-Coding-In-Python/master/data/PEAQ_data/MOV_Spectrogram_Grid_Plots/10_Seconds/BW_Ref.jpg)
 
 #####NMR(avg) (1 second)
-![Image](../data/PEAQ_data/MOV_Spectrogram_Grid_Plots/1_second/NMR_avg.jpg)
+![Image](https://raw.githubusercontent.com/stephencwelch/Perceptual-Coding-In-Python/master/data/PEAQ_data/MOV_Spectrogram_Grid_Plots/1_Second/NMR_avg.jpg)
 
 #####NMR(avg) (10 seconds)
-![Image](/data/PEAQ_data/MOV_Spectrogram_Grid_Plots/10_seconds/NMR_avg.jpg)
+![Image](https://raw.githubusercontent.com/stephencwelch/Perceptual-Coding-In-Python/master/data/PEAQ_data/MOV_Spectrogram_Grid_Plots/10_Seconds/NMR_avg.jpg)
 
 The size and complexity of these plots make it a little difficult to extract meaningful results or information from, though it does appear there may be a relationship between strong vertical striations in the spectrogram and peaks/dips in some MOV curves.
 
@@ -204,16 +204,16 @@ The layout for the stacked plots is as follows, for a specfic MOV variable: the 
 Like with the grid plots, the variables displayed here are the BandwidthRef and NMR(avg) variables. Again, there are plots for both 1 second and 10 seconds of audio. 
 
 #####BandwidthRef (1 second)
-![Image](/data/PEAQ_data/MOV_Spectrogram_Stacked_Plots/1_second_2_Transparency/BW_Ref.jpg)
+![Image](https://raw.githubusercontent.com/stephencwelch/Perceptual-Coding-In-Python/master/data/PEAQ_data/MOV_Spectrogram_Stacked_Plots/1_Second_2_Transparency/BW_Ref.jpg)
 
 #####BandwidthRef (10 seconds)
-![Image](/data/PEAQ_data/MOV_Spectrogram_Stacked_Plots/10_seconds_2_Transparency/BW_Ref.jpg)
+![Image](https://raw.githubusercontent.com/stephencwelch/Perceptual-Coding-In-Python/master/data/PEAQ_data/MOV_Spectrogram_Stacked_Plots/10_Seconds_2_Transparency/BW_Ref.jpg)
 
 #####NMR(avg) (1 second)
-![Image](/data/PEAQ_data/MOV_Spectrogram_Stacked_Plots/1_second_2_Transparency/NMR_avg.jpg)
+![Image](https://raw.githubusercontent.com/stephencwelch/Perceptual-Coding-In-Python/master/data/PEAQ_data/MOV_Spectrogram_Stacked_Plots/1_Second_2_Transparency/NMR_avg.jpg)
 
 #####NMR(avg) (10 seconds)
-![Image](/data/PEAQ_data/MOV_Spectrogram_Stacked_Plots/10_seconds_2_Transparency/NMR_avg.jpg)
+![Image](https://raw.githubusercontent.com/stephencwelch/Perceptual-Coding-In-Python/master/data/PEAQ_data/MOV_Spectrogram_Stacked_Plots/10_Seconds_2_Transparency/NMR_avg.jpg)
 
 Again, like with the grid plots, the complexity of these plots make it a little difficult to extract meaningful results or information from.
 
