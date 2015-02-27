@@ -325,7 +325,7 @@ Shown below are the tables for the two parameters that we found to be most promi
 |  **Mic 3** | 854.75  | 853.29  | 652.67  | 869.42  |
 |  **Piezo** | 641.29  | 642.68  | 535.11  | 665.06  |
 
-These tables do little to provide any additional information about these parameters outside of the conclusions that were already reached from above results. All of the results point towards TotalNMRB and BandwidthRefB as being potentially useful MOVs/measures for future use.
+These tables do little to provide any additional information about these parameters outside of the conclusions that were already reached from above results. All of the results point towards TotalNMRB and BandwidthRefB as being potentially useful MOVs/measures for future use. One reason these plot may be less differentiated between trainsient/sustains is that we may not be actually seperating our signal in a statistically meaningful way - either we are detecting and moving transients incorrectly, or the transient/susatin understanding of these signals is inadequate. 
 
 ######***References***
 [1] T. Thiede, et. al., "PEAQ - The ITU Standard for Objective Measurement of Perceived Audio Quality", J. Audio Eng. Soc., Vol. 48, No 1/2, January/February 2000.
