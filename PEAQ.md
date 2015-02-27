@@ -215,7 +215,9 @@ Like with the grid plots, the variables displayed here are the BandwidthRef and 
 #####NMR(avg) (10 seconds)
 ![Image](https://raw.githubusercontent.com/stephencwelch/Perceptual-Coding-In-Python/master/data/PEAQ_data/MOV_Spectrogram_Stacked_Plots/10_Seconds_2_Transparency/NMR_avg.jpg)
 
-Again, like with the grid plots, the complexity of these plots make it a little difficult to extract meaningful results or information from.
+While no clear overall pattern emerges - we do see some interesting trends here. The Bandwidth MOV for piezo-mic comparisons seems to drop to 0 during transients, without droping to zeros for mic-mic comparisons. One interpretation here is that the bandwidth of the piezo singal changes in a way that is different than the mic signal during transients. This could be potentially useful in future modeling efforts. 
+
+Finally, we see for NMR, our most promising MOV in section one, we see a greater divergence of MOV's (for mic/mic vs. mic/piezo) during sustains, while the MOVs generally trend together in transient portions. This indicates the NMR may be a suitable measure of similarity during sustains, but not transients. 
 
 #####3. Tables - Sustain vs. Transients
 
