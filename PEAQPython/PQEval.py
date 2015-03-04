@@ -24,7 +24,21 @@ class PQEval(object):
 
 		#Precompute hann window:
 		self.hw = self.GL*self.PQHannWin(self.NF)
-		
+
+		#Precompute frequency vector:
+		self.f = np.linspace (0, self.Fs/2, self.NF/2+1)
+
+		#Outer and middle ear weighting:
+		self.W2 = self.PQWOME (self.f)
+
+		#Critical band constants:
+		self.Nc, self.fc, self.fl, self.fu, self.dz = self.PQCB()
+
+		#Internal Noise:
+		self.EIN = self.PQIntNoise(fc)
+
+		#Precompute normalization for frequency spreading:
+		self.Bs = self.PQ_SpreadCB(np.ones(self.Nc), np.ones(self.Nc))
 
 	def PQDFTFrame(self, x):
 		# Window the data
@@ -37,6 +51,150 @@ class PQEval(object):
 		X2 = self.PQRFFTMSq(X, self.NF)
 		
 		return X2
+
+	def PQ_excitCB(self, X2):
+		# Critical band grouping and frequency spreading
+	    
+	    # Allocate storage
+	    Eb = np.zeros((2, self.Nc))
+	    Xw2 = np.zeros((2, self.NF/2+1))
+
+	    # Outer and middle ear filtering
+	    Xw2[0,:] = self.W2 * X2[0,0:self.NF/2+1]
+	    Xw2[1,:] = self.W2 * X2[1,0:self.NF/2+1]
+
+	    XwN2 = np.zeros(self.NF/2+1)
+
+	    # Form the difference magnitude signal
+	    for k in range(self.NF/2):
+	        XwN2[k] = (Xw2[0,k] - 2 * np.sqrt (Xw2[0,k] * Xw2[1,k]) \
+	               + Xw2[1,k])
+	    
+	    # Group into partial critical bands
+	    Eb[0,:] = self.PQgroupCB(Xw2[0,:])
+	    Eb[1,:] = self.PQgroupCB(Xw2[1,:])
+	    EbN     = self.PQgroupCB(XwN2)
+
+	    # Add the internal noise term => "Pitch patterns"
+	    E = np.zeros(Eb.shape)
+	    E[0,:] = Eb[0,:] + self.EIN
+	    E[1,:] = Eb[1,:] + self.EIN
+
+	    # Critical band spreading => "Unsmeared excitation patterns"
+	    Es = np.zeros((2, self.Nc))
+	    Es[0,:] = self.PQspreadCB(E[0,:])
+	    Es[1,:] = self.PQspreadCB(E[1,:])
+	    
+	    return EbN, Es
+
+	def PQgroupCB(self, X2):
+	    # Group a DFT energy vector into critical bands
+	    # X2 - Squared-magnitude vector (DFT bins)
+	    # Eb - Excitation vector (fractional critical bands)
+
+	    Emin = 1e-12
+	    
+	    df = float(self.Fs) / self.NF
+	    
+	    U = np.zeros((self.NF/2+1, self.Nc))
+
+	    for k in range(self.NF/2+1):
+	        for i in range(self.Nc):
+	            temp = (np.amin([self.fu[i], (k+0.5)*df]) - np.amax([self.fl[i], (k-0.5)*df])) / df
+	            U[k, i] = np.amax([0, temp])
+	            
+	    Eb = np.zeros(self.Nc)
+
+	    Eb = np.dot(X2,U)
+	    Eb[Eb<Emin] = Emin
+	    
+	    return Eb
+
+	def PQspreadCB(self, E):
+	    # Spread an excitation vector (pitch pattern) - FFT model
+	    # Both E and Es are powers	    
+	    Es = self.PQ_SpreadCB(E, self.Bs)
+	    
+	    return Es
+
+	def PQ_SpreadCB(self, E, Bs):
+	    
+	    e = 0.4 # Commonly used power value
+	    
+	    # Initialize arrays for storage. These values are used
+	    # in each iteration (summed over, multiplied, raised to
+	    # powers, etc.) when computing the spread Bark-domain
+	    # energy Es.
+	    #
+	    # aUCEe is for the product of bin-dependent (index l)
+	    # term aC, energy-dependent (E) term aE, and
+	    # term aU.
+	    #
+	    # Ene is (E[l]/A(l,E[l]))^e, stored for each index l
+	    #
+	    # Es is the overall spread Bark-domain energy
+	    #
+
+	    aUCEe = np.zeros(self.Nc)
+	    Ene = np.zeros(self.Nc)
+	    Es = np.zeros(self.Nc)
+	    
+	    # Calculate energy-dependent terms
+	    aL = 10**(2.7*self.dz)
+
+	    for l in xrange(self.Nc):
+	        aUC = 10**((-2.4 - 23/self.fc[l])*self.dz)
+	        aUCE = aUC * (E[l]**(0.2*self.dz))
+	        gIL = (1 - aL**(-1*(l+1))) / (1 - aL**(-1))
+	        gIU = (1 - (aUCE)**(self.Nc-l)) / (1 - aUCE)
+	        En = E[l] / (gIL + gIU - 1)
+	        aUCEe[l] = aUCE**(e)
+	        Ene[l] = En**(e)
+	    
+	    # Lower spreading
+	    Es[self.Nc-1] = Ene[self.Nc-1]
+	    aLe = aL**(-1*e)
+	    for i in xrange((self.Nc-2),-1,-1):
+	        Es[i] = aLe*Es[i+1] + Ene[i]
+	    
+	    
+	    # Upper spreading (i > m)
+	    for i in xrange(0,(self.Nc-1)):
+	        r = Ene[i]
+	        a = aUCEe[i]
+	        for l in xrange((i+1),self.Nc):
+	            r = r*a
+	            Es[l] = Es[l] + r
+	            
+	    # Normalize the values by the normalization factor
+	    for i in xrange(0,self.Nc):
+	        Es[i] = (Es[i]**(1/e)) / Bs[i]
+	        
+	    return Es
+
+	def PQ_timeSpread(Es, Ef):
+	    
+	    Nadv = self.NF/2
+	    Fss = float(self.Fs)/Nadv
+	    tau_100 = 0.030
+	    tau_min = 0.008
+	    alpha = PQtConst(tau_100, tau_min, self.fc, Fss)
+	    
+	    # Allocate storage
+	    Ehs = np.zeros(self.Nc)
+	    
+	    # Time domain smoothing
+	    for i in xrange(self.Nc):
+	        Ef[i] = alpha[i]*Ef[i] + (1-alpha[i])*Es[i]
+	        Ehs[i] = max(Ef[i],Es[i])
+	       
+	    return Ehs, Ef
+
+	#Internal noise:
+	def PQIntNoise (self, f):
+	    INdB = 1.456 * (f / 1000.)**(-0.8)
+	    EIN = 10**(INdB / 10.)
+	    return EIN
 
 	#Method to make hanning window, given lenth of window:	
 	def PQHannWin(self, NF):
