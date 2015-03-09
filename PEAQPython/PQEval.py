@@ -40,6 +40,27 @@ class PQEval(object):
 		#Precompute normalization for frequency spreading:
 		self.Bs = self.PQ_SpreadCB(np.ones(self.Nc), np.ones(self.Nc))
 
+		# Allocate storage
+		self.Eb = np.zeros((2, self.Nc))
+		self.Xw2 = np.zeros((2, self.NF/2+1))
+		self.XwN2 = np.zeros(self.NF/2+1)
+		self.E = np.zeros(self.Eb.shape)
+		self.Es = np.zeros((2, self.Nc))
+
+		#Precomput for PQ Group:
+		self.df = float(self.Fs) / self.NF
+		self.Emin = 1e-12
+		
+		self.U = np.zeros((self.NF/2+1, self.Nc))
+
+		for k in range(self.NF/2+1):
+			for i in range(self.Nc):
+				temp = (np.amin([self.fu[i], (k+0.5)*self.df]) - np.amax([self.fl[i], (k-0.5)*self.df])) / self.df
+				self.U[k, i] = np.amax([0, temp])
+				
+
+		print "Everything Precomputed, ready to go!"
+
 	def PQDFTFrame(self, x):
 		# Window the data
 		xw = self.hw * x
@@ -54,21 +75,13 @@ class PQEval(object):
 
 	def PQ_excitCB(self, X2):
 		# Critical band grouping and frequency spreading
-		
-		# Allocate storage
-		self.Eb = np.zeros((2, self.Nc))
-		self.Xw2 = np.zeros((2, self.NF/2+1))
 
 		# Outer and middle ear filtering
 		self.Xw2[0,:] = self.W2 * X2[0,0:self.NF/2+1]
 		self.Xw2[1,:] = self.W2 * X2[1,0:self.NF/2+1]
 
-		self.XwN2 = np.zeros(self.NF/2+1)
-
 		# Form the difference magnitude signal
-		for k in range(self.NF/2):
-			self.XwN2[k] = (self.Xw2[0,k] - 2 * np.sqrt (self.Xw2[0,k] * self.Xw2[1,k]) \
-				   + self.Xw2[1,k])
+		self.XwN2 = self.Xw2[0,:] - 2*np.sqrt(self.Xw2[0,:]*self.Xw2[1,:]) + self.Xw2[1,:]
 		
 		# Group into partial critical bands
 		self.Eb[0,:] = self.PQgroupCB(self.Xw2[0,:])
@@ -76,12 +89,10 @@ class PQEval(object):
 		self.EbN     = self.PQgroupCB(self.XwN2)
 
 		# Add the internal noise term => "Pitch patterns"
-		self.E = np.zeros(self.Eb.shape)
 		self.E[0,:] = self.Eb[0,:] + self.EIN
 		self.E[1,:] = self.Eb[1,:] + self.EIN
 
 		# Critical band spreading => "Unsmeared excitation patterns"
-		self.Es = np.zeros((2, self.Nc))
 		self.Es[0,:] = self.PQspreadCB(self.E[0,:])
 		self.Es[1,:] = self.PQspreadCB(self.E[1,:])
 		
@@ -92,21 +103,8 @@ class PQEval(object):
 		# X2 - Squared-magnitude vector (DFT bins)
 		# Eb - Excitation vector (fractional critical bands)
 
-		Emin = 1e-12
-		
-		df = float(self.Fs) / self.NF
-		
-		U = np.zeros((self.NF/2+1, self.Nc))
-
-		for k in range(self.NF/2+1):
-			for i in range(self.Nc):
-				temp = (np.amin([self.fu[i], (k+0.5)*df]) - np.amax([self.fl[i], (k-0.5)*df])) / df
-				U[k, i] = np.amax([0, temp])
-				
-		Eb = np.zeros(self.Nc)
-
-		Eb = np.dot(X2,U)
-		Eb[Eb<Emin] = Emin
+		Eb = np.dot(X2,self.U)
+		Eb[Eb<self.Emin] = self.Emin
 		
 		return Eb
 
