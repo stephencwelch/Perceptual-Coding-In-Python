@@ -85,14 +85,8 @@ class PEAQ(object):
 		    self.EsMatT[i,:] = self.Es[1,:]
 		    
 		    #Time domain spreading
-		    #Can't time-spread on first frame:
-		    if i > 0:
-		        self.EhsR[i,:], previousFrameR = self.PQE.PQ_timeSpread(self.EsMatR[i,:], previousFrameR)
-		        self.EhsT[i,:], previousFrameT = self.PQE.PQ_timeSpread(self.EsMatT[i,:], previousFrameT)
-		    else:
-		        #First Iteration:
-		        previousFrameR = self.EsMatR[i,:]
-		        previousFrameT = self.EsMatT[i,:]
+		    self.EhsR[i,:], previousFrameR = self.PQE.PQ_timeSpread(self.EsMatR[i,:], previousFrameR)
+		    self.EhsT[i,:], previousFrameT = self.PQE.PQ_timeSpread(self.EsMatT[i,:], previousFrameT)
 
 		print 'Audio Processed! (Kabal, section 2), ' + str(self.Np) + ' windows processed ' + \
 		  ' in ' + str(time.clock()-startTime) + ' seconds.'
@@ -118,9 +112,9 @@ class PEAQ(object):
 	    fl = 8109
 	    kl = int(round(self.NF * float(fl)/self.Fs)) # 346
 	    FRdB = 10 # Ref. signal to exceed threshold level by 10dB
-	    FR = 10**(FRdB/10.)
+	    FR = 10**(FRdB/10.) #added dot to make floating point - SW
 	    FTdB = 5 # Test signal to exceed threshold level by 5dB
-	    FT = 10**(FTdB/10.)
+	    FT = 10**(FTdB/10.) #added dot to make floating point - SW
 	    N = self.NF/2
 	    
 	    # This is the method Kabal uses to find the threshold level.
@@ -155,6 +149,48 @@ class PEAQ(object):
 	            
 	    return BWRef, BWTest
 
+	def PQmovNMRB(self, EbN, Ehs):
+	    # Noise-to-mask ratio
+	    # NMR['NMRavg'] = average NMR
+	    # NMR['NMRmax'] = max. NMR
+	    
+	    NMR = dict()
+	    
+	    # Get ___
+	    Nc, fc, fl, fu, dz = self.PQE.PQCB()
+	    gm = self.PQ_MaskOffset(dz, Nc)
+	    
+	    NMRmax = 0
+	    NMRm = 0
+	    s = 0
 
+	    # Don't need to store the values in an array,
+	    # since in the end we mainly care about the average
+	    # and maximum values. But for debugging and validation
+	    # purposes, I'll include this.
+	    R_NM = np.zeros(Nc)
+	    
+	    for k in xrange(Nc):
+	        NMRm = EbN[k] / (gm[k] * Ehs[k])
+	        R_NM[k] = NMRm # Remove later!
+	        s = s + NMRm
+	        
+	        if (NMRm > NMRmax):
+	            NMRmax = NMRm
+	            
+	    NMR['NMRmax'] = NMRmax
+	    NMR['NMRavg'] = float(s)/Nc
+	    
+	    return NMR
+
+	def PQ_MaskOffset(self, dz, Nc):
+	    gm = np.zeros(Nc)
+	    for k in xrange(Nc):
+	        if (k <= 12./dz):
+	            mdB = 3
+	        else:
+	            mdB = 0.25*k*dz  
+	        gm[k] = 10**(-1*float(mdB)/10) 
+	    return gm
 
 
