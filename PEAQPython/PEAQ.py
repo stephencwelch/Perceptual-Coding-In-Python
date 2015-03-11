@@ -118,9 +118,9 @@ class PEAQ(object):
 	    fl = 8109
 	    kl = int(round(self.NF * float(fl)/self.Fs)) # 346
 	    FRdB = 10 # Ref. signal to exceed threshold level by 10dB
-	    FR = 10**(FRdB/10)
+	    FR = 10**(FRdB/10.)
 	    FTdB = 5 # Test signal to exceed threshold level by 5dB
-	    FT = 10**(FTdB/10)
+	    FT = 10**(FTdB/10.)
 	    N = self.NF/2
 	    
 	    # This is the method Kabal uses to find the threshold level.
@@ -148,7 +148,7 @@ class PEAQ(object):
 	            
 	    BWTest = -1
 	    XthT = FT * Xth # Test signal threshold level
-	    for k in xrange(BWRef-1,-2,-1):
+	    for k in xrange(BWRef-1,-1,-1):
 	        if (X2[1,k+1] >= XthT):
 	            BWTest = k+1
 	            break
