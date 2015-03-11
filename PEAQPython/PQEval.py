@@ -9,18 +9,18 @@
 import numpy as np
 
 class PQEval(object):
-	def __init__(self, Amax = 1, Fs= 48000):
+	def __init__(self, Amax = 1, Fs= 48000, NF= 2048):
+		# Amax is maximum signal amplitude, Fs is sampling frequency
 		#Setup parameters and precompute quantities we'll need.
 		self.Fs = Fs
-		self.NF = 2048
+		self.NF = NF
 
 		#Hardcode the louness scalling params:
 		fcLoudness = 1019.5
-		Fs = 48000
 		Lp = 92
 
 		#Set up the window (including all gains)
-		self.GL = self.PQ_GL(NF= self.NF, Amax = Amax, fcN = fcLoudness/Fs, Lp = Lp)
+		self.GL = self.PQ_GL(NF= self.NF, Amax = Amax, fcN = fcLoudness/self.Fs, Lp = Lp)
 
 		#Precompute hann window:
 		self.hw = self.GL*self.PQHannWin(self.NF)
@@ -47,7 +47,7 @@ class PQEval(object):
 		self.E = np.zeros(self.Eb.shape)
 		self.Es = np.zeros((2, self.Nc))
 
-		#Precomput for PQ Group:
+		#Precompute for PQ Group:
 		self.df = float(self.Fs) / self.NF
 		self.Emin = 1e-12
 		
