@@ -26,10 +26,13 @@ class PEAQ(object):
 		#Number of critical bands:
 		self.Nc = 109
 
-	def process(self, sigR, sigT):
+	def process(self, referenceSignal, testSignal):
 		#Preform basic procssing (Section 2 in Kabal.)
 		# sigR = reference signal	
 		# sigT = test signal
+
+		sigR = referenceSignal
+		sigT = testSignal
 
 		#Number of frames:
 		self.Np = np.floor(len(sigR)/self.Nadv)-1
@@ -44,6 +47,8 @@ class PEAQ(object):
 		#Instantiate Object to process single frames of data:
 		self.PQE = PQEval(Amax = self.Amax, Fs = self.Fs, NF = self.NF)
 
+		print 'Processing Audio...'
+		
 		#Create empty matrices:
 		X2 = np.zeros((2,self.NF/2+1))
 
@@ -66,7 +71,6 @@ class PEAQ(object):
 
 		startS = 0
 
-		print 'Processing Audio...'
 		startTime = time.clock()
 
 		for i in np.arange(self.Np):
@@ -113,6 +117,9 @@ class PEAQ(object):
 	def PQmovBW(self, X2):
 	    # Bandwidth tests for a single frame of reference and test signal
 	    # X2 must be of size 2xNF/2+1
+
+	    # So this is MOSTLY the same as the Octave implementation, but every now and then it
+	    # Give an answer that is different by 1, I'm not sure why - SW 3.12.15
 	    
 	    # fx and fl will always be the same values
 	    fx = 21586
@@ -225,14 +232,23 @@ class PEAQ(object):
 		# I think this is just an average of all the 
 		# positive values, as far as I can tell...
 		# Our implementation is simpler too, becuase we aren't worried about stereo
+		# Ok, so these values don't exactly match Octave, but they are pretty close (+)
 		BandwidthRefB = np.mean(BWRef[BWRef >=0])
 		BandwidthTestB = np.mean(BWTest[BWTest >=0])
 
 		return BandwidthRefB, BandwidthTestB
 
-	def PW_avgNMRB(self, NMRavg, NMRmax):
+	def PQ_avgNMRB(self, NMRavg, NMRmax):
 		#Average NMR values, we also get another MOV here for free - RelDistFramesB
-		
+		#This has been validated against Octave, appears to match very well.
+
+		totalNMRB = 10*np.log10(np.mean(NMRavg))
+
+		#Threshold:
+		Tr = 10**(1.5/10)
+		relDistFramesB = np.mean(NMRmax>Tr)
+
+		return totalNMRB, relDistFramesB
 
 
 

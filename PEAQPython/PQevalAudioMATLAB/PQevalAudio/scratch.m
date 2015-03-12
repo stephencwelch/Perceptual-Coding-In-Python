@@ -32,7 +32,8 @@ Nchan = WAV(1).Nchan;
 [StartS, Fstart, Fend] = PQ_Bounds (WAV, Nchan, StartS, EndS, PQopt);
 
 % Number of PEAQ frames
-Np = Fend - Fstart + 1;
+% Do One lesss to match python code:
+Np = Fend - Fstart + 1 - 1;
 if (PQopt.Ni < 0)
     PQopt.Ni = ceil (Np / abs(PQopt.Ni));
 end
@@ -49,9 +50,8 @@ end
 is = 0;
 % for (i = -Fstart:Np-1)
 
-%Make this stop 1 early than Kabal did to match our python:
 is = 0;
-for (i = Fstart:Np-2)
+for (i = Fstart:Np-1)
 
     % Read a frame of data
     xR = PQgetData (WAV(1), StartS(1) + is, NF);    % Reference file
