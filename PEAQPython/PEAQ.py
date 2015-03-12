@@ -60,6 +60,10 @@ class PEAQ(object):
 		previousFrameR = np.zeros(self.Nc)
 		previousFrameT = np.zeros(self.Nc)
 
+		#Maybe take this out later, but useful in debugging:
+		self.xMatR = np.zeros((self.Np, self.NF))
+		self.xMatT = np.zeros((self.Np, self.NF))
+
 		startS = 0
 
 		print 'Processing Audio...'
@@ -69,6 +73,10 @@ class PEAQ(object):
 		    xR = sigRS[startS:self.NF+startS]
 		    xT = sigTS[startS:self.NF+startS]
 		    startS = startS+self.Nadv
+
+		    #Store unmodified windows of audio:
+		    self.xMatR[i, :] = xR
+		    self.xMatT[i, :] = xT
 		    
 		    #Process Frame: 
 		    X2[0,:] = self.PQE.PQDFTFrame(xR)
@@ -149,6 +157,20 @@ class PEAQ(object):
 	            
 	    return BWRef, BWTest
 
+	def computeNMR(self, EbNMat, EhsR):
+		#Kabal Section ...
+		#Compute NRM for whole time series.
+
+		NMRavg = np.zeros(self.Np)
+		NMRmax = np.zeros(self.Np)
+
+		for i in range(int(self.Np)):
+			NMR = self.PQmovNMRB(EbNMat[i,:], EhsR[i,:])
+			NMRavg[i] = NMR['NMRavg']
+			NMRmax[i] = NMR['NMRmax']
+
+		return NMRavg, NMRmax
+
 	def PQmovNMRB(self, EbN, Ehs):
 	    # Noise-to-mask ratio
 	    # NMR['NMRavg'] = average NMR
@@ -192,5 +214,26 @@ class PEAQ(object):
 	            mdB = 0.25*k*dz  
 	        gm[k] = 10**(-1*float(mdB)/10) 
 	    return gm
+
+
+	## --------------- Averaging -------------------- ##
+	## Time averaging functions for MOVs
+	## Same naming convention as Kabal
+	##
+
+	def PQ_avgBW(self, BWRef, BWTest):
+		# I think this is just an average of all the 
+		# positive values, as far as I can tell...
+		# Our implementation is simpler too, becuase we aren't worried about stereo
+		BandwidthRefB = np.mean(BWRef[BWRef >=0])
+		BandwidthTestB = np.mean(BWTest[BWTest >=0])
+
+		return BandwidthRefB, BandwidthTestB
+
+	def PW_avgNMRB(self, NMRavg, NMRmax):
+		#Average NMR values, we also get another MOV here for free - RelDistFramesB
+		
+
+
 
 

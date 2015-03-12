@@ -49,8 +49,9 @@ end
 is = 0;
 % for (i = -Fstart:Np-1)
 
+%Make this stop 1 early than Kabal did to match our python:
 is = 0;
-for (i = 0:5) %-Fstart:Np-1)
+for (i = Fstart:Np-2)
 
     % Read a frame of data
     xR = PQgetData (WAV(1), StartS(1) + is, NF);    % Reference file
@@ -72,4 +73,13 @@ for (i = 0:5) %-Fstart:Np-1)
         end
     end
 end
+
+% Time average of the MOV values
+if (PQopt.DelayOverlap)
+    Nwup = Fstart;
+else
+    Nwup = 0;
+end
+MOVB = PQavgMOVB (MOVC, Nchan, Nwup);
+
 
