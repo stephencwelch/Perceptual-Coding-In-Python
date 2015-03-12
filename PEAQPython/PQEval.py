@@ -92,7 +92,7 @@ class PQEval(object):
 		self.E[0,:] = self.Eb[0,:] + self.EIN
 		self.E[1,:] = self.Eb[1,:] + self.EIN
 
-		# Critical band spreading => "Unsmeared excitation patterns"
+		# Critical band spreading => "Unsmeared (in time) excitation patterns"
 		self.Es[0,:] = self.PQspreadCB(self.E[0,:])
 		self.Es[1,:] = self.PQspreadCB(self.E[1,:])
 		
