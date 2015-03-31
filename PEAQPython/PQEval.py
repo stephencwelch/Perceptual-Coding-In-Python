@@ -58,7 +58,6 @@ class PQEval(object):
 				temp = (np.amin([self.fu[i], (k+0.5)*self.df]) - np.amax([self.fl[i], (k-0.5)*self.df])) / self.df
 				self.U[k, i] = np.amax([0, temp])
 				
-
 		print "Everything Precomputed, ready to go!"
 
 	def PQDFTFrame(self, x):
