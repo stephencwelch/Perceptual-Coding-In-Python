@@ -126,9 +126,9 @@ class Bark:
         W_short = self.W[:,0:self.nfreqs]
         WW = np.dot(W_short.T,W_short)
 
-        WW_mean_diag = np.maximum(mean(diag(WW))/100, sum(WW,1))
+        WW_mean_diag = np.maximum(np.mean(np.diag(WW))/100, np.sum(WW,1))
         WW_mean_diag = np.reshape(WW_mean_diag,(WW_mean_diag.shape[0],1))
-        W_inv_denom = tile(WW_mean_diag,(1,self.nfilts))
+        W_inv_denom = np.tile(WW_mean_diag,(1,self.nfilts))
 
         W_inv = np.divide(W_short.T, W_inv_denom)
 
